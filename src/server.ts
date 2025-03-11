@@ -7,10 +7,11 @@ import { socketHelper } from './helpers/socket';
 import { config } from './config';
 import os from 'os';
 import cluster from 'cluster';
+import { createClient } from 'redis';
+import socketIORedis from '@socket.io/redis-adapter';
 
 // Number of CPU cores
 const numCPUs = os.cpus().length;
-
 
 //uncaught exception
 process.on('uncaughtException', error => {
@@ -18,24 +19,23 @@ process.on('uncaughtException', error => {
   process.exit(1);
 });
 
-if (cluster.isMaster) {
-  // Fork workers for each CPU core
-  logger.info(colors.green(`Master process started, forking ${numCPUs} workers...`));
+// if (cluster.isMaster) {
+//   // Fork workers for each CPU core
+//   logger.info(colors.green(`Master process started, forking ${numCPUs} workers...`));
   
-  // Fork workers for each core
-  for (let i = 0; i < numCPUs; i++) {
-    console.log("num of CPUs forking 🍴 numCPUs i", i);
-    cluster.fork();
-  }
+//   // Fork workers for each core
+//   for (let i = 0; i < numCPUs; i++) {
+//     console.log("num of CPUs forking 🍴 numCPUs i", i);
+//     cluster.fork();
+//   }
 
-  // When a worker dies, log it and fork a new worker
-  cluster.on('exit', (worker, code, signal) => {
-    logger.error(`Worker ${worker.process.pid} died`);
-    cluster.fork();
-  });
+//   // When a worker dies, log it and fork a new worker
+//   cluster.on('exit', (worker, code, signal) => {
+//     logger.error(`Worker ${worker.process.pid} died`);
+//     cluster.fork();
+//   });
 
-} else {
-
+// } else {
   let server: any;
 
   async function main() {
@@ -51,6 +51,15 @@ if (cluster.isMaster) {
           ),
         );
       });
+
+      // // Create Redis client for Pub/Sub
+      // const pubClient = createClient({
+      //   host: 'localhost',  // Update with your Redis configuration
+      //   port: 6379, // 6379
+      // });
+      // const subClient = pubClient.duplicate();
+
+
       //socket
       const io = new Server(server, {
         pingTimeout: 60000,
@@ -58,6 +67,11 @@ if (cluster.isMaster) {
           origin: '*',
         },
       });
+
+      // // Use Redis adapter for socket communication between workers
+      // io.adapter(socketIORedis({ pubClient, subClient }));
+
+      // Setup socket helper
       socketHelper.socket(io);
       // @ts-ignore
       global.io = io;
@@ -88,4 +102,4 @@ if (cluster.isMaster) {
     }
   });
 
-}
+// }
