@@ -3,9 +3,10 @@ import { parentPort, workerData } from 'worker_threads';
 import mongoose from 'mongoose';
 import { Note } from './note.model.ts'; // Update this if needed
 import { config } from '../../config';
+import connectToDb from '../../config/mongoDbConfig.ts';
 
 // Set a timeout for worker execution (30 seconds)
-const TIMEOUT = 30000; // 30 seconds
+const TIMEOUT = 60000; // 30 seconds 
 
  let timeout: NodeJS.Timeout;
 
@@ -23,9 +24,9 @@ async function performAggregation() {
       serverSelectionTimeoutMS: 30000,  // increase server selection timeout
       socketTimeoutMS: 45000,  // increase socket timeout
     });
+    //  connectToDb();
 
 
-    
     const { projectId, startOfDay, endOfDay } = workerData;
 
   
@@ -69,7 +70,7 @@ async function performAggregation() {
       },
       {
         $project: {
-          _id: 1,
+          _id: { $toString: "$_id" },
           title: 1,
           description: 1,
           isAccepted: 1,

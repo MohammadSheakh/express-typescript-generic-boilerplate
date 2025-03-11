@@ -259,7 +259,7 @@ const getAllByDateAndProjectId = catchAsync(async (req, res) => {
   const { projectId, date } = req.query;
   let result;
   if (date && projectId) {
-    // result = await noteService.getAllByDateAndProjectId(projectId, date);
+     //result = await noteService.getAllByDateAndProjectId(projectId, date);
     result = await noteService.getAllByDateAndProjectIdWorker(projectId, date);
   }
   sendResponse(res, {
