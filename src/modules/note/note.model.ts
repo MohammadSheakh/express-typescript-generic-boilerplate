@@ -50,7 +50,7 @@ noteSchema.plugin(paginate);
 
 noteSchema.set('toJSON', {
   transform: function (doc, ret, options) {
-    ret._noteId = ret._id;  // Rename _id to _projectId
+    ret._noteId = ret._id.toString();  // 🔴 toString() chilo na ..  Rename _id to _projectId
     delete ret._id;  // Remove the original _id field
     return ret;
   }

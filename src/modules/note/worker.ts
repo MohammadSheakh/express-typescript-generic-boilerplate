@@ -1,11 +1,14 @@
+
 import { parentPort, workerData } from 'worker_threads';
 import mongoose from 'mongoose';
 import { Note } from './note.model.ts'; // Update this if needed
+import { config } from '../../config';
+import connectToDb from '../../config/mongoDbConfig.ts';
 
 // Set a timeout for worker execution (30 seconds)
-const TIMEOUT = 30000; // 30 seconds
+const TIMEOUT = 60000; // 30 seconds 
 
-let timeout: NodeJS.Timeout;
+ let timeout: NodeJS.Timeout;
 
 const timeoutPromise = new Promise((_, reject) => {
   timeout = setTimeout(() => {
@@ -16,8 +19,17 @@ const timeoutPromise = new Promise((_, reject) => {
 // This is the worker thread that performs the aggregation logic
 async function performAggregation() {
   try {
+
+    await mongoose.connect(config.database.mongoUrl as string,{
+      serverSelectionTimeoutMS: 30000,  // increase server selection timeout
+      socketTimeoutMS: 45000,  // increase socket timeout
+    });
+    //  connectToDb();
+
+
     const { projectId, startOfDay, endOfDay } = workerData;
 
+  
     // Aggregation to get notes with attachment counts
     const notesWithAttachmentCounts = await Note.aggregate([
       {
@@ -58,7 +70,7 @@ async function performAggregation() {
       },
       {
         $project: {
-          _id: 1,
+          _id: { $toString: "$_id" },
           title: 1,
           description: 1,
           isAccepted: 1,
@@ -112,6 +124,8 @@ async function performAggregation() {
         },
       },
     ]);
+
+    console.log("Total counts aggregation completed: 🟢🟢🟢", totalCounts.length);
 
     // Clear timeout if aggregation completes successfully
     clearTimeout(timeout);
@@ -137,9 +151,13 @@ Promise.race([performAggregation(), timeoutPromise])
   });
 
 
+
 /*
+import { config } from '../../config';
 const { parentPort, workerData } = require('worker_threads');
 const mongoose = require('mongoose');
+
+
 // const Note = require(' ./models/Note'); // Assuming you have the Note model
 import { Note } from './note.model.ts'; // src/modules/note/
 
@@ -159,6 +177,13 @@ const timeoutPromise = new Promise((_, reject) => {
 // This is the worker thread that performs the aggregation logic
 async function performAggregation() {
   try {
+
+    await mongoose.connect(config.database.mongoUrl as string,{
+            serverSelectionTimeoutMS: 30000,  // increase server selection timeout
+            socketTimeoutMS: 45000,  // increase socket timeout
+          });
+
+
     const { projectId, startOfDay, endOfDay } = workerData;
 
     // Aggregation to get notes with attachment counts
@@ -256,6 +281,8 @@ async function performAggregation() {
       },
     ]);
 
+    console.log("🟢🟢", notesWithAttachmentCounts)
+
     // Send the result back to the main thread
     parentPort.postMessage({
       notes: notesWithAttachmentCounts,
@@ -270,5 +297,6 @@ async function performAggregation() {
 // Run the aggregation logic
 performAggregation();
 
-*/
 
+
+*/

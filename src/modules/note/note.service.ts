@@ -42,8 +42,53 @@ export class NoteService extends GenericService<typeof Note> {
     return object;
   }
 
-  async getAllByDateAndProjectId(projectId: string, date: string) {
+  async getAllByDateAndProjectIdWorker(projectId: string, date: string) {
     return new Promise((resolve, reject) => { // Ensure resolve and reject are inside Promise context
+    if (!mongoose.Types.ObjectId.isValid(projectId)) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Invalid projectId');
+    }
+   
+    // Parse the date string (e.g., '2025-03-03')
+    const parsedDate = new Date(date);
+
+    // Check if parsed date is valid
+    if (isNaN(parsedDate.getTime())) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Invalid date format');
+    }
+
+    // Set start of the day (00:00:00.000)
+    const startOfDay = new Date(parsedDate.setHours(0, 0, 0, 0));
+
+    // Set end of the day (23:59:59.999)
+    const endOfDay = new Date(parsedDate.setHours(23, 59, 59, 999));
+
+  
+    // 🟢 Create a worker to perform the aggregation
+
+    const worker = new Worker('./src/modules/note/worker.ts', {
+      workerData: { projectId, startOfDay, endOfDay },
+    });
+
+    worker.on('message', (result) => {
+      resolve(result); // Send the result from worker to the main thread
+    });
+
+    worker.on('error', (error) => {
+      reject(new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, error.message));
+    });
+
+    worker.on('exit', (code) => {
+      if (code !== 0) {
+        reject(new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, 'Worker stopped with exit code ' + code));
+      }
+    });
+
+    });
+  }
+
+
+  async getAllByDateAndProjectId(projectId: string, date: string) {
+    
     if (!mongoose.Types.ObjectId.isValid(projectId)) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Invalid projectId');
     }
@@ -77,28 +122,8 @@ export class NoteService extends GenericService<typeof Note> {
     //   createdAt: { $gte: startOfDay, $lte: endOfDay },
     // }).exec();
 
-    // 🟢 Create a worker to perform the aggregation
+  
 
-    const worker = new Worker('./src/modules/note/worker.ts', {
-      workerData: { projectId, startOfDay, endOfDay },
-    });
-
-    worker.on('message', (result) => {
-      resolve(result); // Send the result from worker to the main thread
-    });
-
-    worker.on('error', (error) => {
-      reject(new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, error.message));
-    });
-
-    worker.on('exit', (code) => {
-      if (code !== 0) {
-        reject(new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, 'Worker stopped with exit code ' + code));
-      }
-    });
-
-
-    /*
 
     const notesWithAttachmentCounts = await Note.aggregate([
       {
@@ -188,8 +213,6 @@ export class NoteService extends GenericService<typeof Note> {
       documentCount: totalCounts.length ? totalCounts[0].totalDocuments : 0
     };
     
-    */
-    });
   }
 
   async getAllimagesOrDocumentOFnoteOrTaskByDateAndProjectId(
