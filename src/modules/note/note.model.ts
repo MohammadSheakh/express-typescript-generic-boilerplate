@@ -41,6 +41,11 @@ const noteSchema = new Schema<INote>(
   { timestamps: true }
 );
 
+// Adding indexes
+noteSchema.index({ projectId: 1 }); // Index for projectId for faster queries
+noteSchema.index({ createdAt: 1 }); // Index for createdAt to optimize date range queries
+
+
 noteSchema.plugin(paginate);
 
 noteSchema.set('toJSON', {

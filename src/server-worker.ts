@@ -9,6 +9,7 @@ import os from 'os';
 import cluster from 'cluster';
 import { createClient } from 'redis';
 import socketIORedis from '@socket.io/redis-adapter';
+import { Worker, isMainThread, parentPort } from 'worker_threads';
 
 // Number of CPU cores
 const numCPUs = os.cpus().length;
@@ -40,10 +41,7 @@ process.on('uncaughtException', error => {
 
   async function main() {
     try {
-      await mongoose.connect(config.database.mongoUrl as string,{
-        serverSelectionTimeoutMS: 30000,  // increase server selection timeout
-        socketTimeoutMS: 45000,  // increase socket timeout
-      });
+      await mongoose.connect(config.database.mongoUrl as string);
       logger.info(colors.green('🚀 Database connected successfully'));
       const port =
         typeof config.port === 'number' ? config.port : Number(config.port);
@@ -78,6 +76,7 @@ process.on('uncaughtException', error => {
       socketHelper.socket(io);
       // @ts-ignore
       global.io = io;
+
     } catch (error) {
       errorLogger.error(colors.red('🤢 Failed to connect Database'));
     }
