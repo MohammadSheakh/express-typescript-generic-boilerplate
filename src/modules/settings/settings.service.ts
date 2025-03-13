@@ -2,10 +2,10 @@
 
 import { StatusCodes } from 'http-status-codes';
 import ApiError from '../../errors/ApiError';
-import { GenericService } from '../Generic Service/generic.services';
 import { settingsType } from './settings.constant';
 import { ISettings } from './settings.interface';
 import { Settings } from './settings.model';
+import { GenericService } from '../__Generic/generic.services';
 
 
 const allowedTypes = [

@@ -2,11 +2,18 @@ import express from 'express';
 import auth from '../../middlewares/auth';
 import validateRequest from '../../shared/validateRequest';
 import { TaskController } from './task.controller';
+import { TaskUsingGenericController } from './taskUsingGeneric.controller';
+import { TaskService } from './task.service';
+import { Task } from './task.model';
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 const router = express.Router();
+
+
+// const taskService = new TaskService();
+const taskUsingGenericController = new TaskUsingGenericController();
 
 //info : pagination route must be before the route with params
 router.route('/paginate').get(
@@ -16,7 +23,8 @@ router.route('/paginate').get(
 
 router.route('/:taskId').get(
   auth('projectManager'),
-  TaskController.getATask
+  // TaskController.getATask
+   taskUsingGenericController.getById
 );
 
 router.route('/update/:taskId').put(

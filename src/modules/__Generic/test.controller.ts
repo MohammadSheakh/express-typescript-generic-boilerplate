@@ -1,9 +1,9 @@
 import { TaskService } from './services/taskService';
-import { GenericController } from './controllers/genericController';
 import { Task } from './models/Task';
+import { GenericController } from './genericController';
 
 // Extend GenericController to create a TaskController
-export class TaskController extends GenericController<Task> {
+export class TestController extends GenericController<Task> {
   constructor(service: any) {
     super(service, 'Task');
   }

@@ -7,7 +7,7 @@ import { sendAdminOrSuperAdminCreationEmail } from '../../helpers/emailService';
 
 import { Project } from '../project/project.model';
 import { CreatorRole } from '../contract/contract.constant';
-import { GenericService } from '../Generic Service/generic.services';
+import { GenericService } from '../__Generic/generic.services';
 
 interface IAdminOrSuperAdminPayload {
   email: string;

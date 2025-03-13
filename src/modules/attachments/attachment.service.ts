@@ -1,9 +1,9 @@
 import { StatusCodes } from 'http-status-codes';
 import ApiError from '../../errors/ApiError';
-import { GenericService } from '../Generic Service/generic.services';
 import { Attachment } from './attachment.model';
 import { uploadFileToSpace } from '../../middlewares/digitalOcean';
 import { AttachmentType } from './attachment.constant';
+import { GenericService } from '../__Generic/generic.services';
 
 export class AttachmentService extends GenericService<typeof Attachment> {
   constructor() {

@@ -1,10 +1,10 @@
 import mongoose, { Mongoose } from 'mongoose';
-import { GenericService } from '../Generic Service/generic.services';
 import { Note } from './note.model';
 import { StatusCodes } from 'http-status-codes';
 import ApiError from '../../errors/ApiError';
 import { Attachment } from '../attachments/attachment.model';
 import { Worker } from 'worker_threads';
+import { GenericService } from '../__Generic/generic.services';
 // import {workerLogic} from './worker';
 
 export class NoteService extends GenericService<typeof Note> {

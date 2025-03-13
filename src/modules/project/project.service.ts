@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import { GenericService } from "../Generic Service/generic.services";
 import { Project } from "./project.model";
 import ApiError from "../../errors/ApiError";
 import { StatusCodes } from "http-status-codes";
 import { Attachment } from "../attachments/attachment.model";
+import { GenericService } from "../__Generic/generic.services";
 
 export class ProjectService extends GenericService<typeof Project> {
     constructor() {

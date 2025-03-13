@@ -29,6 +29,7 @@ export class GenericService<T> {
 
   async getById(id: string) {
     const object = await this.model.findById(id);
+    console.log("hit 👌")
     if (!object) {
       // throw new ApiError(StatusCodes.BAD_REQUEST, 'No file uploaded');
       return null;
