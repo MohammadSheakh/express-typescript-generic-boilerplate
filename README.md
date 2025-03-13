@@ -6,8 +6,8 @@
 Template Used :  Typescript Backend Boilerplate  https://github.com/bdCalling-Sdt-hub/typescript-backend-boilerplate
 
 
-I use Inheritance...  Example:: All Service inherits from GenericService.  and Generic Programming here .. 
-
+I use Inheritance...and Generic Programming here .. Example:: All Service inherits from GenericService. And Controller inherits from Generic Controller ..  
+package manager is update to pnpm from npm .. 
 
 
 -------- Written By :  https://github.com/rakibislam2233
