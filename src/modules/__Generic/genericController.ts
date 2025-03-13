@@ -58,9 +58,9 @@ export class GenericController<T> {
   
     // Get by ID
     getById = catchAsync(async (req: Request, res: Response) => {
-      console.log("Request ❤️❤️❤️", req)
+      
       const id = req.params.id;
-      console.log("hit 😊😊 ❤️❤️❤️	")
+      
        const result = await this.service.getById(id);
        if (!result) {
          throw new ApiError(StatusCodes.NOT_FOUND, `Object with ID ${id} not found`);
