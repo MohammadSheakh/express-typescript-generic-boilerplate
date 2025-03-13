@@ -62,8 +62,7 @@ Ensure you have the following installed:
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/typescript-backend-boilerplate.git
-   cd typescript-backend-boilerplate
+   git clone https://github.com/MohammadSheakh/express-typescript-generic-boilerplate.git
 
    ```
 
