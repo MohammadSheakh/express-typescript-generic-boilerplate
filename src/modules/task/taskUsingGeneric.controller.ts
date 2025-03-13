@@ -11,7 +11,7 @@ import { FolderName } from '../../enums/folderNames';
 import { AttachedToType } from '../attachments/attachment.constant';
 import { NotificationService } from '../notification/notification.services';
 import { Project } from '../project/project.model';
-import { GenericController } from '../__Generic/genericController';
+import { GenericController } from '../__Generic/generic.controller';
 
 // const taskService = new TaskService();
 // const attachmentService = new AttachmentService();
