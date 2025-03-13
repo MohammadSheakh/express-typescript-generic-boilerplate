@@ -21,10 +21,10 @@ router.route('/paginate').get(
   TaskController.getAllTaskWithPagination
 );
 
-router.route('/:taskId').get(
+router.route('/:id').get(
   auth('projectManager'),
   // TaskController.getATask
-   taskUsingGenericController.getById
+   taskUsingGenericController.getById  // Info :  Done with generic controller
 );
 
 router.route('/update/:taskId').put(
