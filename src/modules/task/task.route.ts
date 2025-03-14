@@ -5,12 +5,12 @@ import { TaskController } from './task.controller';
 import { TaskUsingGenericController } from './taskUsingGeneric.controller';
 import { TaskService } from './task.service';
 import { Task } from './task.model';
+import { validateFilters } from '../../middlewares/queryValidation/taskPaginationQueryValidationMiddleware';
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 const router = express.Router();
-
 
 // const taskService = new TaskService();
 const taskUsingGenericController = new TaskUsingGenericController();
@@ -18,13 +18,15 @@ const taskUsingGenericController = new TaskUsingGenericController();
 //info : pagination route must be before the route with params
 router.route('/paginate').get(
   auth('projectManager'),
-  TaskController.getAllTaskWithPagination
+  validateFilters(['_id', 'title']),
+  // TaskController.getAllTaskWithPagination
+  taskUsingGenericController.getAllWithPagination // Info :  Done with generic controller
 );
 
 router.route('/:id').get(
   auth('projectManager'),
   // TaskController.getATask
-   taskUsingGenericController.getById  // Info :  Done with generic controller
+  taskUsingGenericController.getById // Info :  Done with generic controller
 );
 
 router.route('/update/:taskId').put(
@@ -35,7 +37,8 @@ router.route('/update/:taskId').put(
 
 router.route('/').get(
   auth('projectManager'),
-  TaskController.getAllTask
+  // TaskController.getAllTask
+  taskUsingGenericController.getAll // Info :  Done with generic controller
 );
 
 router.route('/create').post(
@@ -49,9 +52,8 @@ router.route('/create').post(
   TaskController.createTask
 );
 
-router.route('/delete/:taskId').delete(
-  auth('projectManager'),
-  TaskController.deleteById
-);
+router
+  .route('/delete/:id')
+  .delete(auth('projectManager'), TaskController.deleteById);
 
 export const TaskRoutes = router;
