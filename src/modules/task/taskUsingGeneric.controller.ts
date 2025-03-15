@@ -19,7 +19,6 @@ import { GenericController } from '../__Generic/generic.controller';
 export class TaskUsingGenericController extends GenericController<typeof Task>{
   constructor() {
     super(new TaskService(), 'Task');
-    
   }
   private taskService = new TaskService();
 

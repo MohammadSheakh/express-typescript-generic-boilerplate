@@ -41,7 +41,8 @@ export class GenericController<T> {
   });
 
   getAllWithPagination = catchAsync(async (req: Request, res: Response) => {
-    const filters = pick(req.query, ['_id', 'title']); // 'projectName',
+    //const filters = pick(req.query, ['_id', 'title']); // now this comes from middleware in router
+    const filters = req.query;
     const options = pick(req.query, ['sortBy', 'limit', 'page', 'populate']);
 
     const result = await this.service.getAllWithPagination(filters, options);
