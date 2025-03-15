@@ -1,5 +1,6 @@
 import { FilterQuery, Schema } from 'mongoose';
 import { PaginateOptions, PaginateResult } from '../../types/paginate';
+
 // Plugin function for pagination
 const paginate = <T>(schema: Schema<T>) => {
   schema.statics.paginate = async function (
@@ -12,6 +13,8 @@ const paginate = <T>(schema: Schema<T>) => {
     const sort = options.sortBy ?? 'createdAt';
     const countPromise = this.countDocuments(filter).exec();
     let query = this.find(filter).sort(sort).skip(skip).limit(limit);
+    // TODO : This gives us exact Match .. we have to add partial match .. 
+    
     if (options.populate) {
       query = query.populate(options.populate);
     }

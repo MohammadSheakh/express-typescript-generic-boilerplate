@@ -7,6 +7,7 @@ import convertHeicToPngMiddleware from '../../shared/convertHeicToPngMiddleware'
 import { ProjectController } from './project.controller';
 import { NoteController } from '../note/note.controller';
 import { validateFilters } from '../../middlewares/queryValidation/paginationQueryValidationMiddleware';
+import { ProjectGenericController } from './projectGeneric.controller';
 // const UPLOADS_FOLDER = 'uploads/users';
 // const upload = fileUploadHandler(UPLOADS_FOLDER);
 
@@ -15,12 +16,19 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 const router = express.Router();
+const projectGenericController = new ProjectGenericController();
 
 //info : pagination route must be before the route with params
 router.route('/paginate').get(
   auth('common'), // projectManager
-  validateFilters(['_id', 'title']),
-  ProjectController.getAllProjectWithPagination
+  validateFilters([
+    'projectName',
+     '_id',
+     'projectSuperVisorId',
+      'projectManagerId',
+      'projectStatus']),
+  // ProjectController.getAllProjectWithPagination
+  projectGenericController.getAllWithPagination
 );
 ///////////////////////////////////////////////////////////////////////
 router
