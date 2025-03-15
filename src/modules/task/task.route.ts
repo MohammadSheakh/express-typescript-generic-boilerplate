@@ -5,7 +5,7 @@ import { TaskController } from './task.controller';
 import { TaskUsingGenericController } from './taskUsingGeneric.controller';
 import { TaskService } from './task.service';
 import { Task } from './task.model';
-import { validateFilters } from '../../middlewares/queryValidation/taskPaginationQueryValidationMiddleware';
+import { validateFilters } from '../../middlewares/queryValidation/paginationQueryValidationMiddleware';
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });

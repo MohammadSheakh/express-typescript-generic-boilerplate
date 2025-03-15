@@ -6,6 +6,7 @@ import validateRequest from '../../shared/validateRequest';
 import convertHeicToPngMiddleware from '../../shared/convertHeicToPngMiddleware';
 import { ProjectController } from './project.controller';
 import { NoteController } from '../note/note.controller';
+import { validateFilters } from '../../middlewares/queryValidation/paginationQueryValidationMiddleware';
 // const UPLOADS_FOLDER = 'uploads/users';
 // const upload = fileUploadHandler(UPLOADS_FOLDER);
 
@@ -18,7 +19,7 @@ const router = express.Router();
 //info : pagination route must be before the route with params
 router.route('/paginate').get(
   auth('common'), // projectManager
-
+  validateFilters(['_id', 'title']),
   ProjectController.getAllProjectWithPagination
 );
 ///////////////////////////////////////////////////////////////////////
